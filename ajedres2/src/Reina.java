@@ -1,46 +1,46 @@
-public class Reina extends Pieza {
+import java.util.List;
+import java.util.ArrayList;
+class Reina extends Pieza {
 
     public Reina(String color, int fila, int columna) {
         super(color, fila, columna, color.equals("BLANCO") ? 'Q' : 'q');
     }
 
     @Override
-    public boolean esMovimientoValido(int nuevaFila, int nuevaColumna, Pieza[][] tablero) {
-        int df = nuevaFila - fila;
-        int dc = nuevaColumna - columna;
+    public List<String> movimientosValidos(Tablero tablero) {
 
-        // Torre
-        if (fila == nuevaFila || columna == nuevaColumna) {
-            int pasoF = Integer.compare(df, 0);
-            int pasoC = Integer.compare(dc, 0);
+        List<String> movs = new ArrayList<>();
 
-            int f = fila + pasoF;
-            int c = columna + pasoC;
+        int[][] dirs = {
+                {-1,0},{1,0},{0,-1},{0,1},
+                {-1,-1},{-1,1},{1,-1},{1,1}
+        };
 
-            while (f != nuevaFila || c != nuevaColumna) {
-                if (tablero[f][c] != null) return false;
-                f += pasoF;
-                c += pasoC;
+        for (int[] d : dirs) {
+
+            int f = fila;
+            int c = columna;
+
+            while (true) {
+
+                f += d[0];
+                c += d[1];
+
+                if (!dentro(f,c)) break;
+
+                if (tablero.estaVacio(f,c)) {
+                    movs.add(Tablero.convertir(f,c));
+                } else {
+
+                    if (!tablero.obtenerPieza(f,c).getColor().equals(color)) {
+                        movs.add(Tablero.convertir(f,c));
+                    }
+
+                    break;
+                }
             }
-            return true;
         }
 
-        // Alfil
-        if (Math.abs(df) == Math.abs(dc)) {
-            int pasoF = df > 0 ? 1 : -1;
-            int pasoC = dc > 0 ? 1 : -1;
-
-            int f = fila + pasoF;
-            int c = columna + pasoC;
-
-            while (f != nuevaFila && c != nuevaColumna) {
-                if (tablero[f][c] != null) return false;
-                f += pasoF;
-                c += pasoC;
-            }
-            return true;
-        }
-
-        return false;
+        return movs;
     }
 }

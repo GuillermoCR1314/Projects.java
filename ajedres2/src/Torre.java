@@ -1,25 +1,40 @@
-public class Torre extends Pieza {
+import java.util.List;
+import java.util.ArrayList;
+class Torre extends Pieza {
 
     public Torre(String color, int fila, int columna) {
         super(color, fila, columna, color.equals("BLANCO") ? 'T' : 't');
     }
 
     @Override
-    public boolean esMovimientoValido(int nuevaFila, int nuevaColumna, Pieza[][] tablero) {
-        if (fila != nuevaFila && columna != nuevaColumna) return false;
+    public List<String> movimientosValidos(Tablero tablero) {
+        List<String> movs = new ArrayList<>();
 
-        int pasoF = Integer.compare(nuevaFila - fila, 0);
-        int pasoC = Integer.compare(nuevaColumna - columna, 0);
+        int[][] dirs = {
+                {-1,0},{1,0},{0,-1},{0,1}
+        };
 
-        int f = fila + pasoF;
-        int c = columna + pasoC;
+        for (int[] d : dirs) {
+            int f = fila;
+            int c = columna;
 
-        while (f != nuevaFila || c != nuevaColumna) {
-            if (tablero[f][c] != null) return false;
-            f += pasoF;
-            c += pasoC;
+            while (true) {
+                f += d[0];
+                c += d[1];
+
+                if (!dentro(f,c)) break;
+
+                if (tablero.estaVacio(f,c)) {
+                    movs.add(Tablero.convertir(f,c));
+                } else {
+                    if (!tablero.obtenerPieza(f,c).getColor().equals(color)) {
+                        movs.add(Tablero.convertir(f,c));
+                    }
+                    break;
+                }
+            }
         }
 
-        return true;
+        return movs;
     }
 }

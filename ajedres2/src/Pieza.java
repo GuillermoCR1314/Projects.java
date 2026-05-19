@@ -1,4 +1,5 @@
-public abstract class Pieza {
+import java.util.List;
+abstract class Pieza {
     protected String color;
     protected int fila;
     protected int columna;
@@ -11,8 +12,6 @@ public abstract class Pieza {
         this.simbolo = simbolo;
     }
 
-    public abstract boolean esMovimientoValido(int nuevaFila, int nuevaColumna, Pieza[][] tablero);
-
     public String getColor() {
         return color;
     }
@@ -21,8 +20,14 @@ public abstract class Pieza {
         return simbolo;
     }
 
-    public void mover(int nuevaFila, int nuevaColumna) {
-        this.fila = nuevaFila;
-        this.columna = nuevaColumna;
+    public void setPosicion(int fila, int columna) {
+        this.fila = fila;
+        this.columna = columna;
+    }
+
+    public abstract List<String> movimientosValidos(Tablero tablero);
+
+    protected boolean dentro(int f, int c) {
+        return f >= 0 && f < 8 && c >= 0 && c < 8;
     }
 }
